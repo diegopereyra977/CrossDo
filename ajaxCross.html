@@ -1,0 +1,125 @@
+<html>
+<head>
+<script type="text/javascript">
+	
+	trace = console.log;
+	var extData = {};
+	//objeto que se encarga de la encriptacion.
+	var IXencrypt = (function(){
+		
+		function _encrypt(str){
+			
+			var codChars = new String(" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNSOPQRSTUVWXYZ0123456789");
+			
+			function charFromCode(number){
+				while(number > 63){
+					number = number - 64;
+				}
+				
+				return codChars[number];
+				
+			}
+			
+			function codeFromChar(cha){
+				return new Number(codChars.indexOf(cha));
+			}
+		
+			var key = new String("palabra clave");
+			var cha= new String();
+			var keycha= new String();
+			var result= new String();
+			var str = new String(str);
+			for(var i = 0; i < str.length; i++){
+				cha = str.substr(i,1);
+				keycha = key.substr((i % key.length)-1,1);
+				sumOfChaAndKeycha = codeFromChar(cha) + codeFromChar(keycha);
+				cha =  charFromCode(sumOfChaAndKeycha);
+				result = result + cha;
+			}
+			return result;
+		}
+		return {
+			encrypt:function(str){
+				return _encrypt(str);
+			}
+		}
+	})();
+	
+	//crea temporalmente script para agregar el response de forma temporal
+    function xss_ajax(url) {
+        var script_id = null;
+        var script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.setAttribute('src', url);
+        script.setAttribute('id', 'script_id');
+
+        script_id = document.getElementById('script_id');
+        if(script_id){
+            document.getElementsByTagName('head')[0].removeChild(script_id);
+        }
+
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+	
+	
+	//funcion de callback que se ejecuta tras el response
+    function callback(data) {
+        var txt = '';
+        
+		if(data['sessionId']){
+			createSessionCookie(data);
+		}
+		
+		for(var key in data) {
+            txt += key + " = " + data[key];
+            txt += "\n";
+        }
+        alert(txt);
+    }
+	
+	//Crea la direccion segun la info pasada en los parametros
+	function setURLAndData(url,data,callback){
+		var compStr = url + "?";
+		for(a in data){
+			compStr = compStr + a + "=" + data[a] + "&";
+		}
+		compStr = compStr + "callback=" + callback;
+		
+		return compStr;
+	}
+	
+    var url = setURLAndData("http://dpgest.eshost.es/receiveResponse.php", {"logId":"Diego","password":IXencrypt.encrypt("Uruguay2012")},"callback");
+	
+	
+	//Crea una cookie con el id de session
+	function createSessionCookie(data){
+		document.cookie =   "sesId=" + data['sessionId'];  
+	}
+	
+	//obtiene el session id a partir de la cookie
+	function getSessCookie(){
+		var allCookies = document.cookie.split(";");
+		var lef,rig;
+		for(var i=0; i < allCookies.length; i++){
+			lef=allCookies[i].substr(0,allCookies[i].indexOf("="));
+			rig=allCookies[i].substr(allCookies[i].indexOf("=")+1);
+			if(lef="sesId"){
+				return rig
+			}
+		}
+	}
+	
+	function sendDataRequest(){
+			url = setURLAndData("http://dpgest.eshost.es/receiveResponse.php",{"sesId":getSessCookie(),"data":"todaladata"},"callback");
+			xss_ajax(url);
+	}
+
+</script>
+<title>Simple Cross Domain Ajax</title>
+</head>
+<body>
+<h1>Simple Cross Domain Ajax</h1>
+<button onclick="xss_ajax(url);">Get Data</button>
+<button onclick="sendDataRequest();">Request Logged</button>
+</body>
+</html>
