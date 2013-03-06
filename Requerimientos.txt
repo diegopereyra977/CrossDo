@@ -1,0 +1,37 @@
+Vamos a hacer una aplicacion con las siguientes funcionalidades.
+
+Va a tener una tabla de contactos con los siguientes campos.
+1 - Id.
+2 - Fecha de creado.
+3 - Nombre.
+4 - Apellido.
+
+Tabla telefonos.
+1 - Id.
+2 - IdContacto.
+3 - TipoTelefono.
+4 - NumeroTelefono.
+
+Tabla email.
+1 - Id.
+2 - IdContacto.
+3 - TipoMail.
+4 - DireccionEmail.
+
+Tabla Direcciones.
+1 - Id.
+2 - IdContacto.
+3 - TipoDireccion.
+4 - Direccion.
+5 - Longitud.
+6 - Latitud.
+
+Vamos a usar:
+RequireJs.
+Backbone (Underscore requerido).
+JQuery.
+JQuery UI. (Widget Factory).
+
+Vamos a tener una pantalla para el ingreso del contacto, y otra para la consulta con tablas y filtrado que permita acceder vista.
+La vista del contacto va a tener geolocation en una ventana nueva o en la misma ventana.
+Pagina de estilo con css3.
