@@ -71,6 +71,7 @@ function login($request){
 	
 	if($logId = "Diego" && $pass = "Uruguay2012"){
 		$sessionId = rand(1000000000,9999999999);
+		Fb::log(">>>>>>> " , $sessionId);
 		//Seteo de la session
 		$userLoggedData['logId'] = $logId;
 		$userLoggedData['latency'] = date("H:i");
