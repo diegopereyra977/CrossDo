@@ -4,6 +4,8 @@
 	
 
 	var extData = {};
+	var url;
+	
 	//objeto que se encarga de la encriptacion.
 	var IXencrypt = (function(){
 		
@@ -44,6 +46,8 @@
 			}
 		}
 	})();
+	
+	setUrlByDefault();
 	
 	//crea temporalmente script para agregar el response de forma temporal
     function xss_ajax(url) {
@@ -87,9 +91,9 @@
 		
 		return compStr;
 	}
-	
-    var url = setURLAndData("http://dpgest.eshost.es/receiveResponse.php", {"logId":"Diego","password":IXencrypt.encrypt("Uruguay2012")},"callback");
-	
+	function setUrlByDefault(){
+		this.url = setURLAndData("http://dpgest.eshost.es/receiveResponse.php", {"logId":"Diego","password":IXencrypt.encrypt("Uruguay2012")},"callback");
+	}
 	
 	//Crea una cookie con el id de session
 	function createSessionCookie(data){
@@ -102,8 +106,8 @@
 		var lef, rig;
 		for(var i=0; i < allCookies.length; i++){
 		
-			this.lef=allCookies[i].substr(0,allCookies[i].indexOf("="));
-			this.rig=allCookies[i].substr(allCookies[i].indexOf("=")+1);
+			lef=allCookies[i].substr(0,allCookies[i].indexOf("="));
+			rig=allCookies[i].substr(allCookies[i].indexOf("=")+1);
 			console.log(rig);
 			if(lef.replace(" ", "") == "sesId"){
 				console.log(rig);
@@ -122,7 +126,7 @@
 </head>
 <body>
 <h1>Simple Cross Domain Ajax</h1>
-<button onclick="xss_ajax(url);">Get Data</button>
+<button onclick="setUrlByDefault();xss_ajax(url);">Get Data</button>
 <button onclick="sendDataRequest();">Request Logged</button>
 </body>
 </html>
